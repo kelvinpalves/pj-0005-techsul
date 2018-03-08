@@ -131,6 +131,34 @@ public class ProdutoGrupoController extends ForgeController {
     }
     
     @GET
+    @Path("proximo/{id}")
+    @Produces({MediaType.APPLICATION_JSON})
+    public Response proximo(@PathParam("id") Integer id) {
+        try {
+            ProdutoGrupoDto dto = servico.proximo(id);
+            addData(dto);
+        } catch (Exception ex) {
+            addError("Ocorreu um erro ao carregar o objeto");
+        }
+        
+        return build();
+    }
+    
+    @GET
+    @Path("anterior/{id}")
+    @Produces({MediaType.APPLICATION_JSON})
+    public Response anterior(@PathParam("id") Integer id) {
+        try {
+            ProdutoGrupoDto dto = servico.anterior(id);
+            addData(dto);
+        } catch (Exception ex) {
+            addError("Ocorreu um erro ao carregar o objeto");
+        }
+        
+        return build();
+    }
+    
+    @GET
     @Path("{from}/{to}")
     @Produces({MediaType.APPLICATION_JSON})
     public Response findRange(@PathParam("from") Integer from, @PathParam("to") Integer to) {

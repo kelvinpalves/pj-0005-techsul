@@ -71,6 +71,14 @@ public class ProdutoGrupoServico {
         return criarConversorDto(dao.encontrarUltimo("idProdutoGrupo"));
     }
     
+    public ProdutoGrupoDto proximo(Integer ultimoId) throws Exception {
+        return criarConversorDto(dao.proximo("idProdutoGrupo", ultimoId));
+    }
+    
+    public ProdutoGrupoDto anterior(Integer ultimoId) throws Exception {
+        return criarConversorDto(dao.anterior("idProdutoGrupo", ultimoId));
+    }
+    
     public List<ProdutoGrupoDto> carregarPorRange(int[] params) throws Exception {
         try {
             

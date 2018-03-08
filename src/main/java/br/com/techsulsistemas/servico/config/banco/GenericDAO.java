@@ -59,6 +59,20 @@ public class GenericDAO<T> {
                 .getSingleResult();
     }
     
+    public T proximo (String coluna, Integer ultimoId) throws Exception {
+        return (T) DAO.getEM().createQuery("SELECT t FROM " + persistentClass.getSimpleName() + " t WHERE t." + coluna + " > :id ORDER BY t." + coluna + " ASC")
+                .setParameter("id", ultimoId)
+                .setMaxResults(1)
+                .getSingleResult();
+    }
+    
+    public T anterior (String coluna, Integer ultimoId) throws Exception {
+        return (T) DAO.getEM().createQuery("SELECT t FROM " + persistentClass.getSimpleName() + " t WHERE t." + coluna + " < :id ORDER BY t." + coluna + " DESC")
+                .setParameter("id", ultimoId)
+                .setMaxResults(1)
+                .getSingleResult();
+    }
+    
     public T encontrarUltimo(String coluna) throws Exception {
         return (T) DAO.getEM().createQuery("SELECT t FROM " + persistentClass.getSimpleName() + " t ORDER BY t." + coluna + " DESC ")
                 .setMaxResults(1)
