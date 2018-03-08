@@ -1,8 +1,58 @@
 <!doctype html>
 <html lang="pt" ng-app="app">
 <head>
-    <title>TechSul</title>
+	<title>TechSul</title>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<base href="/pj-0005-techsul/">
+
+	<link rel="stylesheet" type="text/css" href="bower_components/bootstrap/dist/css/bootstrap.min.css">
+	<link rel="stylesheet" type="text/css" href="bower_components/toastr/toastr.min.css">
 </head>
 <body>
+
+	<nav class="navbar navbar-inverse navbar-fixed-top">
+		<div class="container-fluid">
+			<div class="navbar-header">
+				<a class="navbar-brand" href="#">
+					TechSul
+				</a>
+			</div>
+		</div>
+	</nav>
+
+	<div class="container-fluid" style="padding-top: 70px;" ng-view></div>
+
+	<script type="text/javascript" src="bower_components/jquery/dist/jquery.min.js"></script>
+	<script type="text/javascript" src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+	<script type="text/javascript" src="bower_components/font-awesome/svg-with-js/js/fontawesome-all.min.js"></script>
+	<script type="text/javascript" src="bower_components/toastr/toastr.min.js"></script>
+
+	<script type="text/javascript" src="bower_components/angular/angular.min.js"></script>
+	<script type="text/javascript" src="bower_components/angular-route/angular-route.min.js"></script>
+
+	<script type="text/javascript" src="bower_components/angular-bootstrap/ui-bootstrap.min.js"></script>
+	<script type="text/javascript" src="bower_components/angular-bootstrap/ui-bootstrap-tpls.min.js"></script>
+
+	<script type="text/javascript" src="bower_components/angular-ui-select/dist/select.min.js"></script>
+
+	<script type="text/javascript" src="src/app/app.module.js"></script>
+	<script type="text/javascript" src="src/app/core/core.module.js"></script>
+	<script type="text/javascript" src="src/app/core/utils/utils.module.js"></script>
+	<script type="text/javascript" src="src/app/core/utils/rest.factory.js"></script>
+	<script type="text/javascript" src="src/app/core/config.js"></script>
+
+	<script type="text/javascript" src="src/app/home/home.module.js"></script>
+	<script type="text/javascript" src="src/app/home/home.js"></script>
+
+	<script type="text/javascript" src="src/app/basico/basico.module.js"></script>
+	<script type="text/javascript" src="src/app/basico/produto/produto.module.js"></script>
+	<script type="text/javascript" src="src/app/basico/produto/produto-grupo/produto-grupo.module.js"></script>
+	<script type="text/javascript" src="src/app/basico/produto/produto-grupo/produto-grupo.route.js"></script>
+	<script type="text/javascript" src="src/app/basico/produto/produto-grupo/produto-grupo.rest.js"></script>
+	<script type="text/javascript" src="src/app/basico/produto/produto-grupo/produto-grupo.js"></script>
+
+
+
 </body>
 </html>

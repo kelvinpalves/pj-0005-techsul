@@ -1,0 +1,27 @@
+{
+  "name": "techsul",
+  "homepage": "https://github.com/forgeit/pj-0005-techsul",
+  "authors": [
+    "Kelvin Alves <kalves@kopp.com.br>"
+  ],
+  "description": "Tech Sul Sistemas",
+  "main": "",
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "angular": "^1.6.9",
+    "angular-route": "^1.6.9",
+    "jquery": "^3.3.1",
+    "font-awesome": "^5.0.6",
+    "bootstrap": "3.3.7",
+    "angular-ui-select": "^0.19.8",
+    "angular-bootstrap": "^2.5.0",
+    "toastr": "^2.1.3"
+  }
+}

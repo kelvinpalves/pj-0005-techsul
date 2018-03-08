@@ -50,6 +50,7 @@ nbproject/private/
 # Bower
 bower_components/
 src/main/webapp/bower_components/
+src/main/webapp/.htaccess
 
 View/templates_c
 
