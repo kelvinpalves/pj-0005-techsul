@@ -15,6 +15,7 @@
 
 	function appRun($rootScope, $location, $route) {
 		setRouteEvents();
+		initToastr();
 
 		function routeChangeError() {
 	   		// console.log('Route Change Error');
@@ -40,6 +41,14 @@
 			$rootScope.$on('$routeChangeStart', routeChangeStart);
 			$rootScope.$on('$routeChangeSuccess', routeChangeSuccess);	
 	   	}
+
+	   	function initToastr() {
+			toastr.options.timeOut = 3000;
+			toastr.options.progressBar = true;
+			toastr.options.closeButton = true;
+	        toastr.options.positionClass = 'toast-bottom-right';
+	        toastr.options.preventDuplicates = true;
+		}
 	}
 
 	// function loading(cfpLoadingBarProvider) {

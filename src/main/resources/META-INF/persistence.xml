@@ -3,6 +3,12 @@
   <persistence-unit name="ForgePDVPU" transaction-type="RESOURCE_LOCAL">
     <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
     <class>br.com.techsulsistemas.servico.produto.produtogrupo.ProdutoGrupo</class>
+    <class>br.com.techsulsistemas.servico.empresa.empresaregimetributario.EmpresaCodigoRegimeTributario</class>
+    <class>br.com.techsulsistemas.servico.endereco.enderecocidade.EnderecoCidade</class>
+    <class>br.com.techsulsistemas.servico.endereco.enderecoestado.EnderecoEstado</class>
+    <class>br.com.techsulsistemas.servico.endereco.enderecopais.EnderecoPais</class>
+    <class>br.com.techsulsistemas.servico.empresa.empresa.Empresa</class>
+    <class>br.com.techsulsistemas.servico.empresa.empresaescritoriocontabil.EmpresaEscritorioContabil</class>
     <exclude-unlisted-classes>false</exclude-unlisted-classes>
     <shared-cache-mode>NONE</shared-cache-mode>
     <properties>

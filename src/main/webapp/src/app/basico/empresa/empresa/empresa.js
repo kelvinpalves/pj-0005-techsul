@@ -3,10 +3,10 @@
 	'use strict';
 
 	angular
-		.module('produto.produto-grupo')
-		.controller('ProdutoGrupo', CtrlForm);
+		.module('empresa.empresa')
+		.controller('Empresa', CtrlForm);
 
-	CtrlForm.$inject = ['produtoGrupoRest', '$q', '$http']
+	CtrlForm.$inject = ['empresaRest', '$q', '$http']
 
 	function CtrlForm(dataservice, $q, $http) {
 		/* jshint validthis: true */
