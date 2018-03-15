@@ -30,6 +30,8 @@ public class ApplicationConfig extends Application {
      */
     private void addRestResourceClasses(Set<Class<?>> resources) {
         resources.add(br.com.techsulsistemas.servico.empresa.empresa.EmpresaController.class);
+        resources.add(br.com.techsulsistemas.servico.empresa.empresaescritoriocontabil.EmpresaEscritorioContabilController.class);
+        resources.add(br.com.techsulsistemas.servico.empresa.empresaregimetributario.EmpresaCodigoRegimeTributarioController.class);
         resources.add(br.com.techsulsistemas.servico.produto.produtogrupo.ProdutoGrupoController.class);
     }
     

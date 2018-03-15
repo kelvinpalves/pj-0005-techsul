@@ -6,7 +6,6 @@
 package br.com.techsulsistemas.servico.empresa.empresa;
 
 import br.com.techsulsistemas.servico.config.ForgeController;
-import br.com.techsulsistemas.servico.produto.produtogrupo.ProdutoGrupoCommand;
 import javax.ejb.Stateless;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;

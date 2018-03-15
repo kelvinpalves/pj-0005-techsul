@@ -6,11 +6,24 @@
 		.module('empresa.empresa')
 		.controller('Empresa', CtrlForm);
 
-	CtrlForm.$inject = ['empresaRest', '$q', '$http']
+	CtrlForm.$inject = [
+		'empresaRest', 
+		'$q', 
+		'$http', 
+		'multiPromise',
+		'empresaCodigoRegimeTributarioUtils']
 
-	function CtrlForm(dataservice, $q, $http) {
+	function CtrlForm(
+		dataservice, 
+		$q, 
+		$http, 
+		multiPromise,
+		empresaCodigoRegimeTributarioUtils) {
+
 		/* jshint validthis: true */
 		var vm = this;
+
+		var CODIGO_REGIME_TRIBUTARIO = 0;
 
 		vm.anterior        = anterior;
 		vm.autocomplete    = autocomplete;
@@ -22,6 +35,8 @@
 		vm.remover         = remover;
 		vm.salvar          = salvar;
 		vm.ultimo          = ultimo;
+
+		init();
 
 		function anterior() {
 			if (vm.model.id) {
@@ -72,6 +87,21 @@
 				vm.model = response.data.data.ProdutoGrupoDto;
 				vm.modoEdicao = true;
 			}
+		}
+
+		function init() {
+			var promises = [];
+			promises.push(empresaCodigoRegimeTributarioUtils.carregarCombo());
+			promises.push(empresaCodigoRegimeTributarioUtils.carregarCombo());
+			promises.push(empresaCodigoRegimeTributarioUtils.carregarCombo());
+
+			multiPromise.ready(promises).then(function(values) {
+				if (values[CODIGO_REGIME_TRIBUTARIO].exec) {
+					vm.crtList = values[CODIGO_REGIME_TRIBUTARIO].objeto;
+				} else {
+					toastr.error('Erro ao carregar a lista de códigos do regime tributário.');
+				}
+			});
 		}
 
 		function novo(formulario) {
