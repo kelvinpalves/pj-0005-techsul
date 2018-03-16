@@ -31,18 +31,17 @@
 		var ESCRITORIO_CONTABIL      = 1;
 		var CIDADE                   = 2;
 
-		vm.anterior                     = anterior;
-		vm.autocomplete                 = autocomplete;
+		vm.anterior        = anterior;
+		vm.autocomplete    = autocomplete;
 		vm.carregarSiglaEstadoPorCidade = carregarSiglaEstadoPorCidade;
-		vm.encontrouObjeto              = encontrouObjeto;
-		vm.estado                       = '-';
-		vm.modoEdicao                   = false;
-		vm.novo                         = novo;
-		vm.primeiro                     = primeiro;
-		vm.proximo                      = proximo;
-		vm.remover                      = remover;
-		vm.salvar                       = salvar;
-		vm.ultimo                       = ultimo;
+		vm.encontrouObjeto = encontrouObjeto;
+		vm.modoEdicao      = false;
+		vm.novo            = novo;
+		vm.primeiro        = primeiro;
+		vm.proximo         = proximo;
+		vm.remover         = remover;
+		vm.salvar          = salvar;
+		vm.ultimo          = ultimo;
 
 		init();
 
@@ -76,22 +75,6 @@
 					vm.produtoGrupoList = response.data.data.ArrayList;
 				} else {
 					vm.produtoGrupoList = [];
-				}
-			}
-		}
-
-		function carregarSiglaEstadoPorCidade(cidade) {
-			var encontrou = false;
-
-			for (var i = 0; i < vm.cidadeList.length; i++) {
-				if (vm.cidadeList[i].id === cidade) {
-					vm.estado = vm.cidadeList[i].dados.estado;
-					encontrou = true;
-					break;
-				}
-
-				if (!encontrou) {
-					vm.estado = '-';
 				}
 			}
 		}
@@ -202,8 +185,13 @@
 		}
 
 		function salvar(formulario) {
-			
-			// dataservice.salvar(vm.model).then(success).catch(error);		
+			if (vm.modoEdicao) {
+				vm.model.descricao = vm.auxiliar.descricao ? vm.auxiliar.descricao : vm.auxiliar;
+				dataservice.atualizar(vm.model.id, vm.model).then(success).catch(error);
+			} else {
+				vm.model.descricao = vm.auxiliar.descricao ? vm.auxiliar.descricao : vm.auxiliar;
+				dataservice.salvar(vm.model).then(success).catch(error);
+			}
 
 			function error(response) {
 				console.log(response);
