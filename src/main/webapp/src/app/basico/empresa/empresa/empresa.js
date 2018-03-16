@@ -11,19 +11,22 @@
 		'$q', 
 		'$http', 
 		'multiPromise',
-		'empresaCodigoRegimeTributarioUtils']
+		'empresaCodigoRegimeTributarioUtils',
+		'empresaEscritorioContabilUtils']
 
 	function CtrlForm(
 		dataservice, 
 		$q, 
 		$http, 
 		multiPromise,
-		empresaCodigoRegimeTributarioUtils) {
+		empresaCodigoRegimeTributarioUtils,
+		empresaEscritorioContabilUtils) {
 
 		/* jshint validthis: true */
 		var vm = this;
 
 		var CODIGO_REGIME_TRIBUTARIO = 0;
+		var ESCRITORIO_CONTABIL	     = 1;
 
 		vm.anterior        = anterior;
 		vm.autocomplete    = autocomplete;
@@ -92,14 +95,19 @@
 		function init() {
 			var promises = [];
 			promises.push(empresaCodigoRegimeTributarioUtils.carregarCombo());
-			promises.push(empresaCodigoRegimeTributarioUtils.carregarCombo());
-			promises.push(empresaCodigoRegimeTributarioUtils.carregarCombo());
+			promises.push(empresaEscritorioContabilUtils.carregarCombo());
 
 			multiPromise.ready(promises).then(function(values) {
 				if (values[CODIGO_REGIME_TRIBUTARIO].exec) {
 					vm.crtList = values[CODIGO_REGIME_TRIBUTARIO].objeto;
 				} else {
 					toastr.error('Erro ao carregar a lista de códigos do regime tributário.');
+				}
+
+				if (values[ESCRITORIO_CONTABIL].exec) {
+					vm.escritorioList = values[ESCRITORIO_CONTABIL].objeto;
+				} else {
+					toastr.error('Erro ao carregar a lista de escritório contábil.');
 				}
 			});
 		}
