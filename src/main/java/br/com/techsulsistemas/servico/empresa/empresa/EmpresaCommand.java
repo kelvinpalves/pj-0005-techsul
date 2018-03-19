@@ -32,5 +32,6 @@ public class EmpresaCommand {
     private BigDecimal aliquotaCredito;
     private String cnpj;
     private String logo;
-    private Integer contador;
+    private String email;
+    private Integer escritorio;
 }

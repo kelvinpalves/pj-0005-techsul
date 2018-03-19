@@ -13,7 +13,8 @@
 		'multiPromise',
 		'empresaCodigoRegimeTributarioUtils',
 		'empresaEscritorioContabilUtils',
-		'enderecoCidadeUtils']
+		'enderecoCidadeUtils',
+		'$location']
 
 	function CtrlForm(
 		dataservice, 
@@ -22,7 +23,8 @@
 		multiPromise,
 		empresaCodigoRegimeTributarioUtils,
 		empresaEscritorioContabilUtils,
-		enderecoCidadeUtils) {
+		enderecoCidadeUtils,
+		$location) {
 
 		/* jshint validthis: true */
 		var vm = this;
@@ -30,55 +32,14 @@
 		var CODIGO_REGIME_TRIBUTARIO = 0;
 		var ESCRITORIO_CONTABIL      = 1;
 		var CIDADE                   = 2;
-
-		vm.anterior                     = anterior;
-		vm.autocomplete                 = autocomplete;
+		
 		vm.carregarSiglaEstadoPorCidade = carregarSiglaEstadoPorCidade;
-		vm.encontrouObjeto              = encontrouObjeto;
 		vm.estado                       = '-';
 		vm.modoEdicao                   = false;
-		vm.novo                         = novo;
-		vm.primeiro                     = primeiro;
-		vm.proximo                      = proximo;
-		vm.remover                      = remover;
 		vm.salvar                       = salvar;
-		vm.ultimo                       = ultimo;
+		vm.voltar                       = voltar;
 
 		init();
-
-		function anterior() {
-			if (vm.model.id) {
-				dataservice.anterior(vm.model.id).then(success).catch(error);
-			}
-
-			function error(response) {
-				console.log(response);
-			}
-
-			function success(response) {
-				if (response.data.status == 'true') {
-					vm.model = response.data.data.ProdutoGrupoDto;
-					vm.auxiliar = response.data.data.ProdutoGrupoDto.descricao;
-					vm.modoEdicao = true;
-				}
-			}
-		}
-
-		function autocomplete(auxiliar) {
-			dataservice.autocomplete(auxiliar).then(success).catch(error);
-
-			function error() {
-				vm.produtoGrupoList = [];
-			}
-
-			function success(response) {
-				if (response.data.status == 'true') {
-					vm.produtoGrupoList = response.data.data.ArrayList;
-				} else {
-					vm.produtoGrupoList = [];
-				}
-			}
-		}
 
 		function carregarSiglaEstadoPorCidade(cidade) {
 			var encontrou = false;
@@ -96,28 +57,12 @@
 			}
 		}
 
-		function encontrouObjeto() {
-			if (vm.auxiliar.id) {
-				dataservice.buscar(vm.auxiliar.id).then(success).catch(error);
-			} else {
-				vm.modoEdicao = false;
-			}
-
-			function error(response) {
-				console.log(response);
-			}
-
-			function success(response) {
-				vm.model = response.data.data.ProdutoGrupoDto;
-				vm.modoEdicao = true;
-			}
-		}
-
 		function init() {
 			var promises = [];
 			promises.push(empresaCodigoRegimeTributarioUtils.carregarCombo());
 			promises.push(empresaEscritorioContabilUtils.carregarCombo());
 			promises.push(enderecoCidadeUtils.carregarCombo());
+			promises.push(ultimo());
 
 			multiPromise.ready(promises).then(function(values) {
 				if (values[CODIGO_REGIME_TRIBUTARIO].exec) {
@@ -140,70 +85,8 @@
 			});
 		}
 
-		function novo(formulario) {
-			delete vm.auxiliar;
-			delete vm.model;
-			vm.modoEdicao = false;
-			formulario.$setPristine();
-		}
-
-		function primeiro() {
-			dataservice.primeiro().then(success).catch(error);
-
-			function error(response) {
-				toastr.error('Ocorreu um erro ao carregar os dados.');
-			}
-
-			function success(response) {
-				vm.model = response.data.data.ProdutoGrupoDto;
-				vm.auxiliar = response.data.data.ProdutoGrupoDto.descricao;
-				vm.modoEdicao = true;
-			}
-		}
-
-		function proximo() {
-			if (vm.model.id) {
-				dataservice.proximo(vm.model.id).then(success).catch(error);
-			}
-
-			function error(response) {
-				console.log(response);
-			}
-
-			function success(response) {
-				if (response.data.status == 'true') {
-					vm.model = response.data.data.ProdutoGrupoDto;
-					vm.auxiliar = response.data.data.ProdutoGrupoDto.descricao;
-					vm.modoEdicao = true;
-				}
-			}
-		}
-
-		function remover(formulario) {
-			if (!confirm("Tem certeza que deseja remover o grupo?")) {
-				return false;
-			} else {
-				dataservice.remover(vm.model.id).then(success).catch(error);
-			}
-
-			function error(response) {
-				console.log(response);
-				toastr.error('Ocorreu um erro ao remover o registro.');
-			}
-
-			function success(response) {
-				if (response.data.status == 'true') {
-					toastr.success(response.data.message[0].mensagem);
-					novo(formulario);					
-				} else {
-					toastr.error(response.data.message[0].mensagem);
-				}
-			}
-		}
-
 		function salvar(formulario) {
-			
-			// dataservice.salvar(vm.model).then(success).catch(error);		
+			dataservice.atualizar(vm.model.id, vm.model).then(success).catch(error);		
 
 			function error(response) {
 				console.log(response);
@@ -213,7 +96,6 @@
 			function success(response) {
 				if (response.data.status == 'true') {
 					toastr.success(response.data.message[0].mensagem);
-					novo(formulario);					
 				} else {
 					toastr.error(response.data.message[0].mensagem);
 				}
@@ -221,17 +103,15 @@
 		}
 
 		function ultimo() {
-			dataservice.ultimo().then(success).catch(error);
-
-			function error(response) {
-				console.log(response);
-			}
+			dataservice.ultimo().then(success);
 
 			function success(response) {
-				vm.model = response.data.data.ProdutoGrupoDto;
-				vm.auxiliar = response.data.data.ProdutoGrupoDto.descricao;
-				vm.modoEdicao = true;
+				vm.model = response.data.data.EmpresaDto;
 			}
+		}
+
+		function voltar() {
+			$location.path('/');
 		}
 	}
 
