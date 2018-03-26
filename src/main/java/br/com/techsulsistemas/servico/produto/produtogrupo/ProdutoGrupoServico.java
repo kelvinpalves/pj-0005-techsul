@@ -10,6 +10,7 @@ import br.com.techsulsistemas.servico.config.comum.AutoCompleteDto;
 import br.com.techsulsistemas.servico.config.comum.ComboDto;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 
@@ -66,7 +67,10 @@ public class ProdutoGrupoServico {
             List<ProdutoGrupo> dados = dao.findAll();
             
             for (ProdutoGrupo model : dados) {
-                lista.add(criarConversorComboDto(model));
+                HashMap<String, Object> lucro = new HashMap<>();
+                lucro.put("lucro", model.getPercentualLucro());
+                
+                lista.add(criarConversorComboDto(model, lucro));
             }
             
             return lista;
@@ -75,10 +79,11 @@ public class ProdutoGrupoServico {
         }
     }
     
-    private ComboDto criarConversorComboDto(ProdutoGrupo model) throws Exception {
+    private ComboDto criarConversorComboDto(ProdutoGrupo model, HashMap<String, Object> dados) throws Exception {
         return ComboDto.builder()
                 .id(model.getIdProdutoGrupo())
                 .descricao(model.getDescricao())
+                .dados(dados)
                 .build();
     }
     
