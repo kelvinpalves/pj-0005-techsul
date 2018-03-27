@@ -64,7 +64,7 @@ public class ProdutoGrupoServico {
     public List<ComboDto> combo() throws Exception {
         try {
             List<ComboDto> lista = new ArrayList<>();
-            List<ProdutoGrupo> dados = dao.findAll();
+            List<ProdutoGrupo> dados = dao.findAllOrderBy("descricao");
             
             for (ProdutoGrupo model : dados) {
                 HashMap<String, Object> lucro = new HashMap<>();
