@@ -33,7 +33,10 @@
 		var PRODUTO_ORIGEM  = 3;
 		var PRODUTO_CSOSN   = 4;
 
+		var KEY_ENTER = 13;
+
 		vm.anterior            = anterior;
+		vm.buscarPorCodigo     = buscarPorCodigo;
 		vm.evtChangeLucro      = evtChangeLucro;
 		vm.evtChangePrecoCusto = evtChangePrecoCusto;
 		vm.evtChangePrecoVenda = evtChangePrecoVenda;
@@ -63,6 +66,25 @@
 
 			function success(response) {
 				if (response.data.status == 'true') {
+					vm.model = response.data.data.ProdutoDto;
+					carregarObjetosAuxiliares(vm.model);
+				}
+			}
+		}
+
+		function buscarPorCodigo(codigo, evt) {
+			if (evt.keyCode === KEY_ENTER) {
+				if (codigo) {
+					dataservice.buscar(codigo).then(success).catch(error);
+				} else {
+					vm.modoEdicao = false;
+				}
+
+				function error(response) {
+					console.log(response);
+				}
+
+				function success(response) {
 					vm.model = response.data.data.ProdutoDto;
 					carregarObjetosAuxiliares(vm.model);
 				}
@@ -207,8 +229,7 @@
 
 		function salvar(formulario) {
 			if (vm.modoEdicao) {
-				// vm.model.descricao = vm.auxiliar.descricao ? vm.auxiliar.descricao : vm.auxiliar;
-				// dataservice.atualizar(vm.model.id, vm.model).then(success).catch(error);
+				dataservice.atualizar(vm.model.id, vm.model).then(success).catch(error);
 			} else {
 				dataservice.salvar(vm.model).then(success).catch(error);
 			}

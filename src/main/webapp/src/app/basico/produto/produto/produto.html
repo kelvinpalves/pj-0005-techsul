@@ -51,7 +51,7 @@
 							<div class="col-md-offset-1 col-md-4">
 								<div class="form-group" ng-class="formulario.codigo.$dirty && formulario.codigo.$invalid ? 'has-error' : ''">
 									<label for="codigo">Código: *</label>
-									<input name="codigo" type="text" class="form-control input-sm" ng-model="vm.model.codigo" required>
+									<input name="codigo" type="text" class="form-control input-sm" ng-model="vm.model.codigo" required ng-keyup="vm.buscarPorCodigo(vm.model.codigo, $event)">
 								  	<span class="help-block" ng-show="formulario.codigo.$dirty && formulario.codigo.$invalid && formulario.codigo.$error.required">Campo é obrigatório.</span>
 								</div>
 							</div>

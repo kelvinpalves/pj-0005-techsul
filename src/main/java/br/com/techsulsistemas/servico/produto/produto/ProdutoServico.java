@@ -29,8 +29,7 @@ public class ProdutoServico {
     public void criar(ProdutoDto dto) throws Exception {
         validarEntrada(dto);
         
-        try {
-            
+        try {        
             Produto produto = new Produto();
             
             produto.setCodigo(dto.getCodigo());
@@ -51,6 +50,42 @@ public class ProdutoServico {
             
             DAO.begin();
             DAO.getEM().persist(produto);
+            DAO.commit();
+        } catch (Exception ex) {
+            DAO.rollback();
+            ex.printStackTrace();
+            throw ex;
+        }
+    }
+    
+    public ProdutoDto carregar(String codigo) throws Exception {
+        return criarConversorDto(dao.encontrarProdutoPorCodigo(codigo));
+    }
+    
+    public void atualizar(ProdutoDto dto) throws Exception {
+        validarEntrada(dto);
+        
+        try {        
+            Produto produto = dao.encontrar(dto.getId());
+            
+            produto.setCodigo(dto.getCodigo());
+            produto.setEan(dto.getEan());
+            produto.setEanTributario(dto.getEanTributario());
+            produto.setDescricao(dto.getDescricao());
+            produto.setFgSituacao(dto.isSituacao());
+            produto.setProdutoUnidade(new ProdutoUnidade(dto.getUnidade()));
+            produto.setProdutoCest(new ProdutoCest(dto.getCest()));
+            produto.setProdutoGrupo(new ProdutoGrupo(dto.getGrupo()));
+            produto.setPrecoCusto(new BigDecimal(dto.getPrecoCusto()));
+            produto.setLucro(new BigDecimal(dto.getLucro()));
+            produto.setPrecoVenda(new BigDecimal(dto.getPrecoVenda()));
+            produto.setPrecoEspecial(new BigDecimal(dto.getPrecoEspecial()));
+            produto.setQuantidadePrecoEspecial(new BigDecimal(dto.getQuantidadeEspecial()));
+            produto.setProdutoOrigem(new ProdutoOrigem(dto.getOrigem()));
+            produto.setProdutoCsosn(new ProdutoCsosn(dto.getCsosn()));
+            
+            DAO.begin();
+            DAO.getEM().merge(produto);
             DAO.commit();
         } catch (Exception ex) {
             DAO.rollback();

@@ -6,11 +6,13 @@
 package br.com.techsulsistemas.servico.produto.produto;
 
 import br.com.techsulsistemas.servico.config.ForgeController;
+import br.com.techsulsistemas.servico.produto.produtogrupo.ProdutoGrupoDto;
 import javax.ejb.Stateless;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -30,6 +32,54 @@ public class ProdutoController extends ForgeController {
     
     public ProdutoController() {
         this.servico = new ProdutoServico();
+    }
+    
+    @GET
+    @Path("codigo/{id}")
+    @Produces({MediaType.APPLICATION_JSON})
+    public Response find(@PathParam("id") String codigo) {
+        try {
+            ProdutoDto dto = servico.carregar(codigo);
+            addData(dto);
+        } catch (Exception ex) {
+            addError("Ocorreu um erro ao carregar o objeto");
+        }
+        
+        return build();
+    }
+    
+    @PUT
+    @Path("{id:\\d+}")
+    @Consumes({MediaType.APPLICATION_JSON})
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response edit(@PathParam("id") Integer id, ProdutoCommand command) {
+        try {
+            ProdutoDto dto = ProdutoDto.builder()
+                    .id(id)
+                    .codigo(command.getCodigo())
+                    .ean(command.getEan())
+                    .eanTributario(command.getEanTributario())
+                    .descricao(command.getDescricao())
+                    .situacao(command.isSituacao())
+                    .unidade(command.getUnidade())
+                    .cest(command.getCest())
+                    .grupo(command.getGrupo())
+                    .precoCusto(command.getPrecoCusto())
+                    .lucro(command.getLucro())
+                    .precoVenda(command.getPrecoVenda())
+                    .precoEspecial(command.getPrecoEspecial())
+                    .quantidadeEspecial(command.getQuantidadeEspecial())
+                    .origem(command.getOrigem())
+                    .csosn(command.getCsosn())
+                    .build();
+            
+            servico.atualizar(dto);
+            addMessage("Sucesso ao atualizar o grupo de produto");
+        } catch (Exception ex) {
+            addError(ex);
+        }
+        
+        return build();
     }
     
     @POST
