@@ -33,26 +33,51 @@
 		var PRODUTO_ORIGEM  = 3;
 		var PRODUTO_CSOSN   = 4;
 
-		var zerado = {
-			precoCusto: 0,
-			precoVenda: 0,
-			precoEspecial: 0,
-			lucro: 0,
-			quantidadePrecoEspecial: 0
-		}
-
+		vm.anterior            = anterior;
 		vm.evtChangeLucro      = evtChangeLucro;
 		vm.evtChangePrecoCusto = evtChangePrecoCusto;
 		vm.evtChangePrecoVenda = evtChangePrecoVenda;
-		vm.model               = zerado;
+		vm.modoEdicao          = false;
+		vm.novo                = novo;
+		vm.primeiro            = primeiro;
+		vm.proximo             = proximo;
+		vm.remover             = remover;
 		vm.salvar              = salvar;
 		vm.setCsosn            = setCsosn;
 		vm.setGrupo            = setGrupo;
 		vm.setNCM              = setNCM;
 		vm.setOrigem           = setOrigem;
 		vm.setUnidade          = setUnidade;
+		vm.ultimo              = ultimo;
 
 		init();
+
+		function anterior() {
+			if (vm.model.id) {
+				dataservice.anterior(vm.model.id).then(success).catch(error);
+			}
+
+			function error(response) {
+				console.log(response);
+			}
+
+			function success(response) {
+				if (response.data.status == 'true') {
+					vm.model = response.data.data.ProdutoDto;
+					carregarObjetosAuxiliares(vm.model);
+				}
+			}
+		}
+
+		function carregarObjetosAuxiliares(objeto) {
+			vm.modoEdicao = true;
+			objeto.situacao = objeto.situacao ? 'true' : 'false';
+			vm.unidadeList.some(someUnidade);
+			vm.grupoList.some(someGrupo);
+			vm.origemMercadoriaList.some(someOrigem);
+			vm.ncmList.some(someNcm);
+			vm.csosnList.some(someCsosn);
+		}
 
 		function evtChangeLucro() {
 			if (vm.model.lucro && vm.model.lucro > 0) {
@@ -80,6 +105,8 @@
 
 		function init() {
 			var promises = [];
+
+			setarObjetoInicial();
 
 			promises.push(produtoGrupoUtils.carregarCombo());
 			promises.push(produtoUnidadeUtils.carregarCombo());
@@ -120,8 +147,85 @@
 			});
 		}
 
-		function salvar() {
-			console.log(vm.model);
+		function novo(formulario) {
+			setarObjetoInicial();
+			vm.modoEdicao = false;
+			formulario.$setPristine();
+		}
+
+		function primeiro() {
+			dataservice.primeiro().then(success).catch(error);
+
+			function error(response) {
+				toastr.error('Ocorreu um erro ao carregar os dados.');
+			}
+
+			function success(response) {
+				vm.model = response.data.data.ProdutoDto;
+				carregarObjetosAuxiliares(vm.model);
+			}
+		}
+
+		function proximo() {
+			if (vm.model.id) {
+				dataservice.proximo(vm.model.id).then(success).catch(error);
+			}
+
+			function error(response) {
+				console.log(response);
+			}
+
+			function success(response) {
+				if (response.data.status == 'true') {
+					vm.model = response.data.data.ProdutoDto;
+					carregarObjetosAuxiliares(vm.model);
+				}
+			}
+		}
+
+		function remover(formulario) {
+			if (!confirm("Tem certeza que deseja remover o produto?")) {
+				return false;
+			} else {
+				dataservice.remover(vm.model.id).then(success).catch(error);
+			}
+
+			function error(response) {
+				console.log(response);
+				toastr.error('Ocorreu um erro ao remover o registro.');
+			}
+
+			function success(response) {
+				if (response.data.status == 'true') {
+					toastr.success(response.data.message[0].mensagem);
+					novo(formulario);					
+				} else {
+					toastr.error(response.data.message[0].mensagem);
+				}
+			}
+		}
+
+		function salvar(formulario) {
+			if (vm.modoEdicao) {
+				// vm.model.descricao = vm.auxiliar.descricao ? vm.auxiliar.descricao : vm.auxiliar;
+				// dataservice.atualizar(vm.model.id, vm.model).then(success).catch(error);
+			} else {
+				dataservice.salvar(vm.model).then(success).catch(error);
+			}
+
+			function error(response) {
+				console.log(response);
+				toastr.error("Ocorreu um erro ao salvar.");
+			}
+
+			function success(response) {
+				if (response.data.status == 'true') {
+					toastr.success(response.data.message[0].mensagem);
+					novo(formulario);					
+				} else {
+					toastr.error(response.data.message[0].mensagem);
+				}
+			}
 		}
 
 		function setCsosn(objeto) {
@@ -157,6 +261,23 @@
 			}
 		}
 
+		function setarObjetoInicial() {
+			vm.model = {};
+			vm.model.precoCusto         = 0;
+			vm.model.precoVenda         = 0;
+			vm.model.precoEspecial      = 0;
+			vm.model.lucro              = 0;
+			vm.model.quantidadeEspecial = 0;
+			vm.model.situacao           = 'true';
+
+			delete vm.csosn;
+			delete vm.grupo;
+			delete vm.cest;
+			delete vm.origemMercadoria;
+			delete vm.ncm;
+			delete vm.unidade;
+		}
+
 		function setOrigem(objeto) {
 			if (objeto == null) {
 				delete vm.model.origem;
@@ -170,6 +291,55 @@
 				delete vm.model.unidade;
 			} else {
 				vm.model.unidade = objeto.id;
+			}
+		}
+
+		function someCsosn(objeto) {
+			if (vm.model.csosn === objeto.id) {
+				vm.csosn = objeto;
+				return true;
+			}
+		}
+
+		function someGrupo(objeto) {
+			if (vm.model.grupo === objeto.id) {
+				vm.grupo = objeto;
+				return true;
+			}
+		}
+
+		function someNcm(objeto) {
+			if (vm.model.cest === objeto.id) {
+				vm.ncm = objeto;
+				setNCM(objeto);
+				return true;
+			}
+		}
+
+		function someOrigem(objeto) {
+			if (vm.model.origem === objeto.id) {
+				vm.origemMercadoria = objeto;
+				return true;
+			}
+		}
+
+		function someUnidade(objeto) {
+			if (vm.model.unidade === objeto.id) {
+				vm.unidade = objeto;
+				return true;
+			}
+		}
+
+		function ultimo() {
+			dataservice.ultimo().then(success).catch(error);
+
+			function error(response) {
+				toastr.error('Ocorreu um erro ao carregar os dados.');
+			}
+
+			function success(response) {
+				vm.model = response.data.data.ProdutoDto;
+				carregarObjetosAuxiliares(vm.model);
 			}
 		}
 	}

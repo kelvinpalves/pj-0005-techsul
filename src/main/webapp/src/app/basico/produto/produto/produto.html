@@ -59,7 +59,7 @@
 							<div class="col-md-3">
 								<div class="form-group" ng-class="formulario.ean.$dirty && formulario.ean.$invalid ? 'has-error' : ''">
 									<label for="ean">EAN:</label>
-									<input name="ean" type="number" class="form-control input-sm" ng-model="vm.model.ean" maxlength="13">
+									<input name="ean" type="text" class="form-control input-sm" ng-model="vm.model.ean" maxlength="13">
 									<span class="help-block" ng-show="formulario.ean.$dirty && formulario.ean.$invalid && formulario.ean.$error.number">Valor deve ser númerico.</span>
 								</div>
 							</div>
@@ -67,7 +67,7 @@
 							<div class="col-md-3">
 								<div class="form-group" ng-class="formulario.eanTributario.$dirty && formulario.eanTributario.$invalid ? 'has-error' : ''">
 									<label for="eanTributario">EAN Tributário:</label>
-									<input name="eanTributario" type="number" class="form-control input-sm" ng-model="vm.model.eanTributario" maxlength="13">
+									<input name="eanTributario" type="text" class="form-control input-sm" ng-model="vm.model.eanTributario" maxlength="13">
 									<span class="help-block" ng-show="formulario.eanTributario.$dirty && formulario.eanTributario.$invalid && formulario.eanTributario.$error.number">Valor deve ser númerico.</span>
 								</div>
 							</div>
@@ -85,9 +85,9 @@
 							<div class="col-md-2">
 								<div class="form-group">
 									<label for="unidade">Situação:</label>
-									<select class="form-control">
+									<select class="form-control" ng-model="vm.model.situacao">
 										<option value="true">Ativo</option>
-										<option value="true">Inativo</option>
+										<option value="false">Inativo</option>
 									</select>
 								</div>
 							</div>
@@ -190,8 +190,8 @@
 
 							<div class="col-md-2">
 								<div class="form-group">
-									<label for="quantidadePrecoEspecial">Quantidade Preço Especial:</label>
-									<input name="quantidadePrecoEspecial" type="text" class="form-control input-sm" ng-model="vm.model.quantidadePrecoEspecial" ui-number-mask="2">
+									<label for="quantidadeEspecial">Quantidade Preço Especial:</label>
+									<input name="quantidadeEspecial" type="text" class="form-control input-sm" ng-model="vm.model.quantidadeEspecial" ui-number-mask="2">
 								</div>
 							</div>
 						
