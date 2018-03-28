@@ -60,8 +60,8 @@
                                 <label for="tipoMovimentacao">Tipo de Movimentação:</label>
                                 <select 
                                     class="form-control input-sm" id="tipoMovimentacao"  name="tipoMovimentacao"
-                                    ng-options="tipoMovimentacao.id as tipoMovimentacao.descricao for tipoMovimentacao in vm.tipoMovimentacaoList"  
-                                    ng-model="vm.model.tipoMovimentacao">
+                                    ng-options="tipoMovimentacao as tipoMovimentacao.descricao for tipoMovimentacao in vm.tipoMovimentacaoList"  
+                                    ng-model="vm.tipoMovimentacao" >
                                     <option value="" >Selecione</option>
                                 </select>
                             </div>
@@ -79,19 +79,13 @@
                         <div class="col-md-offset-1 col-md-2">
                             <div class="form-group has-feedback">
                                 <label for="produto">Produto:</label>
-                                <!-- <input 
-                                type="text" 
-                                ng-model="vm.produto" 
-                                uib-typeahead="objeto as objeto.descricao for objeto in vm.produtoList" 
-                                class="form-control input-sm" 
-                                typeahead-show-hint="true" 
-                                typeahead-min-length="0" 
-                                ng-keyup="vm.autocomplete(vm.produto)"
-                                typeahead-on-select="vm.encontrouObjeto($item, $model, $label, $event)"
-                                required 
-                                name="produto" > -->
-
-                                <input type="text" ng-model="vm.produto" uib-typeahead="objeto as objeto.descricao for objeto in vm.autocomplete($viewValue)" typeahead-loading="loadingLocations" class="form-control">
+                                <input 
+                                    type="text" 
+                                    ng-model="vm.produto" 
+                                    uib-typeahead="objeto as objeto.descricao for objeto in vm.autocomplete($viewValue)" 
+                                    typeahead-on-select="vm.setProduto($item, $model, $label, $event)"
+                                    ng-change="vm.setProduto(null)"
+                                    class="form-control input-sm">
                                 <span style="top: 20px;" class="glyphicon glyphicon-search form-control-feedback" aria-hidden="true"></span>
                             </div>
                         </div>
@@ -104,7 +98,7 @@
                         <div class="col-md-2">
                             <div class="form-group">
                                 <label for="estoque">Estoque:</label>
-                                <input name="estoque" type="text" class="form-control input-sm" ng-model="vm.model.estoque" ui-number-mask="2">
+                                <input name="estoque" type="text" class="form-control input-sm" ng-model="vm.produtoEstoque" ui-number-mask="2" ng-disabled="true">
                             </div>
                         </div>
                     </div>
@@ -120,14 +114,14 @@
                         <div class="col-md-2">
                             <div class="form-group">
                                 <label for="precoCusto">Preço de Custo:</label>
-                                <input type="text" name="precoCusto" ng-model="vm.model.precoCusto" ui-money-mask="2" class="form-control input-sm" ng-change="vm.evtChangePrecoCusto()">
+                                <input ng-disabled="!vm.tipoMovimentacao.dados.custo" type="text" name="precoCusto" ng-model="vm.model.precoCusto" ui-money-mask="2" class="form-control input-sm" ng-change="vm.evtChangePrecoCusto()">
                             </div>
                         </div>
 
                         <div class="col-md-2">
                             <div class="form-group">
                                 <label for="precoVenda">Preço de Venda:</label>
-                                <input type="text" name="precoVenda" ng-model="vm.model.precoVenda" ui-money-mask="2" class="form-control input-sm" ng-change="vm.evtChangePrecoVenda()">
+                                <input ng-disabled="!vm.tipoMovimentacao.dados.venda" type="text" name="precoVenda" ng-model="vm.model.precoVenda" ui-money-mask="2" class="form-control input-sm" ng-change="vm.evtChangePrecoVenda()">
                             </div>
                         </div>
                     </div>
@@ -150,46 +144,21 @@
                             <tr>
                                 <th style="width: 15%">Código</th>
                                 <th>Produto</th>
-                                <th style="width: 15%">Qtd</th>
+                                <th style="width: 15%">Quantidade</th>
                                 <th style="width: 15%">Valor</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td>1</td>
-                                <td>Produto Teste</td>
-                                <td>1.00</td>
-                                <td>R$ 10,00</td>
+                            <tr ng-hide="vm.ultimasMovimentacoes.length">
+                                <td colspan="4" class="text-center">
+                                    Não possui registros.
+                                </td>
                             </tr>
-                            <tr>
-                                <td>1</td>
-                                <td>Produto Teste</td>
-                                <td>1.00</td>
-                                <td>R$ 10,00</td>
-                            </tr>
-                            <tr>
-                                <td>1</td>
-                                <td>Produto Teste</td>
-                                <td>1.00</td>
-                                <td>R$ 10,00</td>
-                            </tr>
-                            <tr>
-                                <td>1</td>
-                                <td>Produto Teste</td>
-                                <td>1.00</td>
-                                <td>R$ 10,00</td>
-                            </tr>
-                            <tr>
-                                <td>1</td>
-                                <td>Produto Teste</td>
-                                <td>1.00</td>
-                                <td>R$ 10,00</td>
-                            </tr>
-                            <tr>
-                                <td>1</td>
-                                <td>Produto Teste</td>
-                                <td>1.00</td>
-                                <td>R$ 10,00</td>
+                            <tr ng-repeat="movimentacao in vm.ultimasMovimentacoes">
+                                <td ng-bind="movimentacao.id"></td>
+                                <td ng-bind="movimentacao.produto"></td>
+                                <td ng-bind="movimentacao.quantidade | number"></td>
+                                <td ng-bind="movimentacao.valor | currency"></td>
                             </tr>
                         </tbody>
                     </table>
@@ -197,4 +166,4 @@
             </div>
         </div>
     </div>
-</form>     
+</form>

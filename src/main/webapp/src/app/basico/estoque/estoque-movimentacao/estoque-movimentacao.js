@@ -11,28 +11,34 @@
         'multiPromise',
         '$location',
         'estoqueMovimentacaoTipoUtils',
-        'produtoUtils']
+        'produtoUtils',
+        'estoqueUtils',
+        'estoqueMovimentacaoUtils']
 
     function CtrlForm(
         dataservice, 
         multiPromise,
         $location,
         estoqueMovimentacaoTipoUtils, 
-        produtoUtils) {
+        produtoUtils,
+        estoqueUtils,
+        estoqueMovimentacaoUtils) {
 
         /* jshint validthis: true */
         var vm = this;
 
         var ESTOQUE_MOVIMENTACAO_TIPO = 0;
 
+        var PROD_ESTOQUE     = 0;
+        var PROD_MVT_ESTOQUE = 1;
+
         vm.autocomplete = autocomplete;
+        vm.setProduto = setProduto;
         vm.voltar = voltar;
 
         init();
 
         function autocomplete(auxiliar) {
-            console.log(auxiliar);
-
             return produtoUtils.autocomplete(auxiliar).then(success).catch(error);
 
             function error(response) {
@@ -40,16 +46,14 @@
             }
 
             function success(response) {
-                if (response.exec) {
-                    return response.objeto;
-                } else {
-                    return [];
-                }
+                return response.exec ? response.objeto : [];
             }
         }
 
         function init() {
             var promises = [];
+
+            setarObjetoInicial();
 
             promises.push(estoqueMovimentacaoTipoUtils.carregarCombo());
 
@@ -61,6 +65,47 @@
                 }
             });
 
+        }
+
+        function setarObjetoInicial(codigo) {
+            vm.model = {};
+            vm.model.precoCusto         = 0;
+            vm.model.precoVenda         = 0;
+            vm.model.quantidade         = 0;
+            vm.model.dataMovimentacao   = new Date();
+            delete vm.produto;
+        }
+
+        function setProduto(objeto) {
+            var promises = [];
+
+            if (objeto === null) {
+                delete vm.produtoDescricao;
+                delete vm.produtoEstoque;
+                delete vm.ultimasMovimentacoes;
+            } else {
+                if (vm.produto.id) {
+                    promises.push(estoqueUtils.carregarPorProduto(vm.produto.id));
+                    promises.push(estoqueMovimentacaoUtils.buscarUltimasMovimentacoesPorProduto(vm.produto.id));
+
+                    multiPromise.ready(promises).then(function(values) {
+                        if (values[PROD_ESTOQUE].exec) {
+                            vm.produtoDescricao  = values[PROD_ESTOQUE].objeto.produto;
+                            vm.produtoEstoque = values[PROD_ESTOQUE].objeto.quantidade;
+                        } else {
+                            delete vm.produtoDescricao;
+                            delete vm.produtoEstoque;
+                        }
+
+                        if (values[PROD_MVT_ESTOQUE].exec) {
+                            vm.ultimasMovimentacoes = values[PROD_MVT_ESTOQUE].objeto;
+                        } else {
+                            delete vm.ultimasMovimentacoes;
+                        }
+
+                    });
+                }
+            }
         }
 
         function voltar() {
