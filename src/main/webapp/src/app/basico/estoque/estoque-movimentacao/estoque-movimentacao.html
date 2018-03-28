@@ -79,17 +79,19 @@
                         <div class="col-md-offset-1 col-md-2">
                             <div class="form-group has-feedback">
                                 <label for="produto">Produto:</label>
-                                <input 
+                                <!-- <input 
                                 type="text" 
                                 ng-model="vm.produto" 
-                                uib-typeahead="objeto as objeto.descricao for objeto in vm.produtoList | filter:{descricao:$viewValue}" 
+                                uib-typeahead="objeto as objeto.descricao for objeto in vm.produtoList" 
                                 class="form-control input-sm" 
                                 typeahead-show-hint="true" 
                                 typeahead-min-length="0" 
                                 ng-keyup="vm.autocomplete(vm.produto)"
                                 typeahead-on-select="vm.encontrouObjeto($item, $model, $label, $event)"
                                 required 
-                                name="produto" >
+                                name="produto" > -->
+
+                                <input type="text" ng-model="vm.produto" uib-typeahead="objeto as objeto.descricao for objeto in vm.autocomplete($viewValue)" typeahead-loading="loadingLocations" class="form-control">
                                 <span style="top: 20px;" class="glyphicon glyphicon-search form-control-feedback" aria-hidden="true"></span>
                             </div>
                         </div>

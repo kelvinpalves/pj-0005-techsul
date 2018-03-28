@@ -10,22 +10,43 @@
         'estoqueMovimentacaoRest',
         'multiPromise',
         '$location',
-        'estoqueMovimentacaoTipoUtils']
+        'estoqueMovimentacaoTipoUtils',
+        'produtoUtils']
 
     function CtrlForm(
         dataservice, 
         multiPromise,
         $location,
-        estoqueMovimentacaoTipoUtils) {
+        estoqueMovimentacaoTipoUtils, 
+        produtoUtils) {
 
         /* jshint validthis: true */
         var vm = this;
 
         var ESTOQUE_MOVIMENTACAO_TIPO = 0;
 
+        vm.autocomplete = autocomplete;
         vm.voltar = voltar;
 
         init();
+
+        function autocomplete(auxiliar) {
+            console.log(auxiliar);
+
+            return produtoUtils.autocomplete(auxiliar).then(success).catch(error);
+
+            function error(response) {
+                return [];
+            }
+
+            function success(response) {
+                if (response.exec) {
+                    return response.objeto;
+                } else {
+                    return [];
+                }
+            }
+        }
 
         function init() {
             var promises = [];
