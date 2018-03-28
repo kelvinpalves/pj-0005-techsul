@@ -199,6 +199,7 @@
 			dataservice.primeiro().then(success).catch(error);
 
 			function error(response) {
+				novo();
 				toastr.error('Ocorreu um erro ao carregar os dados.');
 			}
 
@@ -379,6 +380,7 @@
 			dataservice.ultimo().then(success).catch(error);
 
 			function error(response) {
+				novo();
 				toastr.error('Ocorreu um erro ao carregar os dados.');
 			}
 
