@@ -39,12 +39,14 @@
         var PROD_MVT_ESTOQUE = 1;
 
         var $doc = angular.element(document);
+        var serialUltimasMoficacoes = 1;
 
         vm.autocomplete        = autocomplete;
         vm.novo = novo;
         vm.salvar              = salvar;
         vm.setProduto          = setProduto;
         vm.setTipoMovimentacao = setTipoMovimentacao;
+        vm.ultimasMovimentacoes = [];
         vm.voltar              = voltar;
 
         init();
@@ -53,7 +55,16 @@
 
         $scope.$on("$destroy", function () {
             $doc.off("keyup", atalho);
-        });   
+        });
+
+        function adicionarUltimaModificacao(objeto) {
+            vm.ultimasMovimentacoes.push({
+                id: serialUltimasMoficacoes++,
+                produto: objeto.produto,
+                quantidade: objeto.soma ? objeto.quantidade : (objeto.quantidade * -1),
+                valor: objeto.valor
+            });
+        }
 
         function atalho(e) {
             if (ATALHO_SALVAR === e.keyCode) {
@@ -132,6 +143,13 @@
             function success(response) {
                 if (response.data.status == 'true') {
                     toastr.success(response.data.message[0].mensagem);
+
+                    adicionarUltimaModificacao({ 
+                        produto: vm.produtoDescricao, 
+                        quantidade: vm.model.quantidade, 
+                        soma: vm.tipoMovimentacao.dados.soma, 
+                        valor: vm.model.precoCusto ? vm.model.precoCusto : 0});
+
                     novo(formulario, {
                         tipoMovimentacao: vm.model.tipoMovimentacao, 
                         dataMovimentacao: vm.model.dataMovimentacao});
@@ -153,14 +171,12 @@
             if (objeto === null) {
                 delete vm.produtoDescricao;
                 delete vm.produtoEstoque;
-                delete vm.ultimasMovimentacoes;
                 delete vm.model.produto;
             } else {
                 if (vm.produto.id) {
                     vm.model.produto = vm.produto.id;
 
                     promises.push(estoqueUtils.carregarPorProduto(vm.produto.id));
-                    promises.push(estoqueMovimentacaoUtils.buscarUltimasMovimentacoesPorProduto(vm.produto.id));
 
                     multiPromise.ready(promises).then(function(values) {
                         if (values[PROD_ESTOQUE].exec) {
@@ -170,13 +186,6 @@
                             delete vm.produtoDescricao;
                             delete vm.produtoEstoque;
                         }
-
-                        if (values[PROD_MVT_ESTOQUE].exec) {
-                            vm.ultimasMovimentacoes = values[PROD_MVT_ESTOQUE].objeto;
-                        } else {
-                            delete vm.ultimasMovimentacoes;
-                        }
-
                     });
                 }
             }

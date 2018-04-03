@@ -32,6 +32,7 @@ public class EstoqueMovimentacaoTipoServico {
                 HashMap<String, Object> map = new HashMap<>();
                 map.put("custo", model.getFgAlterarPrecoCusto());
                 map.put("venda", model.getFgAlterarPrecoVenda());
+                map.put("soma", model.getFgSoma());
                 
                 lista.add(criarConversorComboDto(model, map));
             }
