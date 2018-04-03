@@ -1,22 +1,36 @@
-<form novalidate name="formulario" autocomplete="off" >
+<style type="text/css">
+    
+    .div-table {
+        padding-left: 30px;
+        padding-right: 30px;
+    }    
+
+    table tbody tr td {
+        padding-top: 2.8px !important;
+        padding-bottom: 2.8px !important;
+    }
+
+</style>
+
+<form novalidate name="vm.formulario" autocomplete="off" >
     <div class="panel panel-primary">
         <div class="panel-heading">Movimentação de Estoque</div>
         <div class="panel-body" style="padding: 2px;">
             <div class="row">
                 <div class="col-md-offset-1 col-md-1" style="padding-left: 1px; padding-right: 1px;">
-                    <button type="button" ng-click="vm.novo(formulario)" style="width: 100%;" class="btn btn-primary"><i class="fa fa-file-alt fa-2x"></i><br>Novo</button>
+                    <button type="button" ng-click="vm.novo(vm.formulario)" style="width: 100%;" class="btn btn-primary"><i class="fa fa-file-alt fa-2x"></i><br>Novo</button>
                 </div>
 
                 <div class="col-md-1" style="padding-left: 1px; padding-right: 1px;">
-                    <button type="button" ng-disabled="formulario.$invalid" ng-click="vm.salvar(formulario)" style="width: 100%;" class="btn btn-primary"><i class="fa fa-save fa-2x"></i><br>Salvar</button>
+                    <button type="button" ng-disabled="vm.formulario.$invalid" ng-click="vm.salvar(vm.formulario)" style="width: 100%;" class="btn btn-primary"><i class="fa fa-save fa-2x"></i><br>Salvar (F2)</button>
                 </div>
 
                 <div class="col-md-1" style="padding-left: 1px; padding-right: 1px;">
-                    <button type="button" ng-disabled="!vm.model.id" ng-click="vm.remover(formulario)" style="width: 100%;" class="btn btn-primary"><i class="fa fa-trash fa-2x"></i><br>Excluir</button>
+                    <button type="button" ng-disabled="!vm.model.id" ng-click="vm.remover(vm.formulario)" style="width: 100%;" class="btn btn-primary"><i class="fa fa-trash fa-2x"></i><br>Excluir</button>
                 </div>
 
                 <div class="col-md-1" style="padding-left: 1px; padding-right: 1px;">
-                    <button type="button" ng-click="vm.novo(formulario)" style="width: 100%;" class="btn btn-primary"><i class="fa fa-quidditch fa-2x"></i><br>Limpar</button>
+                    <button type="button" ng-click="vm.novo(vm.formulario)" style="width: 100%;" class="btn btn-primary"><i class="fa fa-quidditch fa-2x"></i><br>Limpar</button>
                 </div>
 
                 <div class="col-md-1" style="padding-left: 1px; padding-right: 1px;">
@@ -47,11 +61,19 @@
             <div class="row" style="margin-top: 20px;">
                 <div class="col-md-12">
                     
+                    <div class="row" ng-hide="true">
+                        <div class="col-md-12">
+                            <pre>
+                                {{ vm.model }}
+                            </pre>
+                        </div>
+                    </div>
+
                     <div class="row">
                         <div class="col-md-offset-1 col-md-2">
                             <div class="form-group">
                                 <label for="dataMovimentacao">Data da Movimentação:</label>
-                                <input name="dataMovimentacao" type="text" class="form-control input-sm" ng-model="vm.model.dataMovimentacao" uib-datepicker-popup="dd/MM/yyyy" is-open="focus1" ng-focus="focus1=true" show-button-bar="false">
+                                <input name="dataMovimentacao" type="text" class="form-control input-sm" ng-model="vm.model.dataMovimentacao" uib-datepicker-popup="dd/MM/yyyy" is-open="focus1" ng-focus="focus1=true" show-button-bar="false" required>
                             </div>
                         </div>
 
@@ -61,7 +83,9 @@
                                 <select 
                                     class="form-control input-sm" id="tipoMovimentacao"  name="tipoMovimentacao"
                                     ng-options="tipoMovimentacao as tipoMovimentacao.descricao for tipoMovimentacao in vm.tipoMovimentacaoList"  
-                                    ng-model="vm.tipoMovimentacao" >
+                                    ng-model="vm.tipoMovimentacao" 
+                                    ng-change="vm.setTipoMovimentacao(vm.tipoMovimentacao)"
+                                    required>
                                     <option value="" >Selecione</option>
                                 </select>
                             </div>
@@ -80,6 +104,7 @@
                             <div class="form-group has-feedback">
                                 <label for="produto">Produto:</label>
                                 <input 
+                                    id="produto"
                                     type="text" 
                                     ng-model="vm.produto" 
                                     uib-typeahead="objeto as objeto.descricao for objeto in vm.autocomplete($viewValue)" 
@@ -87,6 +112,7 @@
                                     ng-change="vm.setProduto(null)"
                                     class="form-control input-sm">
                                 <span style="top: 20px;" class="glyphicon glyphicon-search form-control-feedback" aria-hidden="true"></span>
+                                <input type="hidden" ng-model="vm.model.produto" required />
                             </div>
                         </div>
                         <div class="col-md-6">
@@ -98,7 +124,7 @@
                         <div class="col-md-2">
                             <div class="form-group">
                                 <label for="estoque">Estoque:</label>
-                                <input name="estoque" type="text" class="form-control input-sm" ng-model="vm.produtoEstoque" ui-number-mask="2" ng-disabled="true">
+                                <input name="estoque" type="text" class="form-control input-sm" ng-model="vm.produtoEstoque" ui-number-mask="2" ui-negative-number ng-disabled="true">
                             </div>
                         </div>
                     </div>
@@ -107,7 +133,7 @@
                         <div class="col-md-2 col-md-offset-1">
                             <div class="form-group">
                                 <label for="quantidade">Quantidade:</label>
-                                <input name="quantidade" type="text" class="form-control input-sm" ng-model="vm.model.quantidade" ui-number-mask="2">
+                                <input name="quantidade" type="text" class="form-control input-sm" ng-model="vm.model.quantidade" ui-number-mask="2" required min="1">
                             </div>
                         </div>
 
@@ -138,27 +164,27 @@
             </div>
 
             <div class="row">
-                <div class="col-md-10 col-md-offset-1">
+                <div class="col-md-12 div-table">
                     <table class="table table-bordered">
                         <thead>
                             <tr>
-                                <th style="width: 15%">Código</th>
+                                <th style="width: 5%">Código</th>
                                 <th>Produto</th>
-                                <th style="width: 15%">Quantidade</th>
-                                <th style="width: 15%">Valor</th>
+                                <th style="width: 20%">Tipo de Movimentação</th>
+                                <th style="width: 10%">Quantidade</th>
+                                <th style="width: 10%">Valor</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr ng-hide="vm.ultimasMovimentacoes.length">
-                                <td colspan="4" class="text-center">
-                                    Não possui registros.
-                                </td>
+                                <td colspan="5" class="text-center">Não possui registros.</td>
                             </tr>
                             <tr ng-repeat="movimentacao in vm.ultimasMovimentacoes">
-                                <td ng-bind="movimentacao.id"></td>
+                                <td class="text-center" ng-bind="movimentacao.id"></td>
                                 <td ng-bind="movimentacao.produto"></td>
-                                <td ng-bind="movimentacao.quantidade | number"></td>
-                                <td ng-bind="movimentacao.valor | currency"></td>
+                                <td ng-bind="movimentacao.tipo"></td>
+                                <td class="text-right" ng-bind="movimentacao.quantidade | number"></td>
+                                <td class="text-right" ng-bind="movimentacao.valor | currency"></td>
                             </tr>
                         </tbody>
                     </table>

@@ -5,7 +5,7 @@
  */
 package br.com.techsulsistemas.servico.estoque.estoquemovimentacao;
 
-import lombok.Builder;
+import java.util.Date;
 import lombok.Data;
 
 /**
@@ -14,11 +14,12 @@ import lombok.Data;
  */
 
 @Data
-@Builder
-public class EstoqueMovimentacaoDtoUltimos {
-    private final Integer id;
-    private final String produto;
-    private final Double quantidade;
-    private final Double valor;
-    private final String tipo;
+public class EstoqueMovimentacaoCommand {
+    private Date dataMovimentacao;
+    private Integer tipoMovimentacao;
+    private Integer produto;
+    private Double quantidade;
+    private Double precoCusto;
+    private Double precoVenda;
+    private String observacao;
 }
