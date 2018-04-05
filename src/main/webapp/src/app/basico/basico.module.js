@@ -4,7 +4,8 @@
 		'basico.empresa',
         'basico.endereco',
 		'basico.estoque',
-		'basico.produto'
+        'basico.produto',
+		'basico.pdv'
 		]);
 
 })();
