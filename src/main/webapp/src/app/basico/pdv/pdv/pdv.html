@@ -35,9 +35,9 @@
 }
 
 .lista-itens {
-    height: 500px;
+    height: 350px;
     background-color: white;
-    margin: 10px;
+    margin: 15px;
     border: 3px solid #aaa;
     border-radius: 3px;
 }
@@ -50,94 +50,169 @@ table thead tr th {
     background-color: #36648a;
     color: white;
 }
+
+.botao-pdv {
+    color: black;
+    background-color: #7b99b2;
+    padding: 5px 10px;
+    margin-top: 2px;
+    border: 1px solid #294862;
+    border-radius: 2px;
+    text-align: center;
+    cursor: pointer;
+    display: inline-block;
+    height: 30px;
+    width: {{ vm.larguraBotaoPdv }}px;
+}
+
 </style>
 
 <form name="formulario" novalidate autocomplete="off">
 
-<div class="row">
-    <div class="col-md-12">
-        <input type="text" class="input-pdv" ng-model="vm.model.descricao" ng-disabled="true">
+    <div class="row">
+        <div class="col-md-12">
+            <input type="text" class="input-pdv" ng-model="vm.model.descricao" ng-disabled="true">
+        </div>
     </div>
-</div>
 
-<div class="row">
-    <div class="col-md-6">
-        <div class="row">
-            <div class="col-md-12 logo" >
-                TechSul Sistemas
+    <div class="row">
+        <div class="col-md-6">
+            <div class="row">
+                <div class="col-md-12 logo" >
+                    TechSul Sistemas
+                </div>
             </div>
-        </div>
-        <div class="row">
-            <div class="col-md-12">
-                <div class="form-group">
-                    <label class="label-pdv">Produto</label>
-                    <input type="text" class="input-pdv" ng-model="vm.model.codigo" ng-keyup="vm.buscarPorCodigo(vm.model.codigo, $event)" id="codigo">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <label class="label-pdv">Produto</label>
+                        <input type="text" class="input-pdv" ng-model="vm.model.codigo" id="codigo" ng-keyup="vm.evtKeyUpCodigo(vm.model.codigo, $event)">
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="label-pdv">Quantidade</label>
+                        <input id="quantidade" type="text" ui-number-mask="3" class="input-pdv" ng-model="vm.model.quantidade" ng-disabled="true">
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="label-pdv">Preço Unitário</label>
+                        <input type="text" class="input-pdv" ng-model="vm.model.preco" ui-money-mask="2" ng-disabled="true">
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6" >
+                    <div class="form-group">
+                        <label class="label-pdv">{{ vm.tipoDesconto ? '%' : 'R$' }} Desconto</label>
+                        <input id="desconto" type="text" class="input-pdv" ng-model="vm.model.desconto" ui-number-mask="2" ng-disabled="true">
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="label-pdv">Total Produto</label>
+                        <input type="text" class="input-pdv" ng-model="vm.model.valorTotalProduto" ui-money-mask="2" ng-disabled="true">
+                    </div>
                 </div>
             </div>
         </div>
-        <div class="row">
-            <div class="col-md-6">
-                <div class="form-group">
-                    <label class="label-pdv">Quantidade</label>
-                    <input id="quantidade" type="text" ui-number-mask="3" class="input-pdv" ng-model="vm.model.quantidade" ng-change="vm.evtChangePrecoOuQuantidade(vm.model)" ng-keyup="vm.evtKeyUpAdicionarNaLista(vm.model, $event)" ng-disabled="true">
-                </div>
+        <div class="col-md-6" >
+            <div class="lista-itens">
+                <table style="width: 100%;">
+                    <thead>
+                        <tr>
+                            <th style="width: 10%;">Nº Item</th>
+                            <th>Descrição</th>
+                            <th class="text-center" style="width: 15%;">Quant.</th>
+                            <th class="text-center" style="width: 15%;">Pr. Unitário</th>
+                            <th class="text-center" style="width: 15%;">Total</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr ng-repeat="(key, item) in vm.itens">
+                            <td ng-bind="(key + 1)"></td>
+                            <td ng-bind="item.descricao"></td>
+                            <td ng-bind="item.quantidade | number" class="text-center"></td>
+                            <td ng-bind="item.preco | currency" class="text-center"></td>
+                            <td ng-bind="item.totalItem | currency" class="text-center"></td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
-            <div class="col-md-6">
-                <div class="form-group">
-                    <label class="label-pdv">Preço Unitário</label>
-                    <input type="text" class="input-pdv" ng-model="vm.model.preco" ui-money-mask="2" ng-change="vm.evtChangePrecoOuQuantidade(vm.model)">
+            <div class="row">
+                <div class="col-md-8 text-right">
+                    <label class="label-pdv" style="margin-top: 12px;">Total Geral</label>
                 </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-6" >
-                <div class="form-group">
-                    <label class="label-pdv">{{ vm.tipoDesconto ? '%' : 'R$' }} Desconto</label>
-                    <input id="desconto" type="text" class="input-pdv" ng-model="vm.model.desconto" ui-number-mask="2" ng-keyup="vm.evtKeyUpMudarTipoDesconto($event)">
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="form-group">
-                    <label class="label-pdv">Total Produto</label>
-                    <input type="text" class="input-pdv" ng-model="vm.model.valorTotalProduto" ui-money-mask="2" ng-disabled="true">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <input type="text" class="input-pdv text-center" style="margin-left: -8px;" ng-model="vm.valorTotalNota" ui-money-mask="2" ng-disabled="true">
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-    <div class="col-md-6" >
-        <div class="lista-itens">
-            <table style="width: 100%;">
-                <thead>
-                    <tr>
-                        <th style="width: 10%;">Nº Item</th>
-                        <th>Descrição</th>
-                        <th class="text-center" style="width: 15%;">Quant.</th>
-                        <th class="text-center" style="width: 15%;">Pr. Unitário</th>
-                        <th class="text-center" style="width: 15%;">Total</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr ng-repeat="(key, item) in vm.itens">
-                        <td ng-bind="(key + 1)"></td>
-                        <td ng-bind="item.descricao"></td>
-                        <td ng-bind="item.quantidade | number" class="text-center"></td>
-                        <td ng-bind="item.preco | currency" class="text-center"></td>
-                        <td ng-bind="item.totalItem | currency" class="text-center"></td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-        <div class="row">
-            <div class="col-md-8 text-right">
-                <label class="label-pdv" style="margin-top: 12px;">Total Geral</label>
-            </div>
-            <div class="col-md-4">
-                <div class="form-group">
-                    <input type="text" class="input-pdv text-center" style="margin-left: -8px;" ng-model="vm.valorTotalNota" ui-money-mask="2">
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
 
 </form>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="botao-pdv">
+            F4 - Consulta Produto
+        </div>
+
+        <div class="botao-pdv">
+            F9 - Produto
+        </div>
+
+        <div class="botao-pdv">
+            * ou Q - Quantidade          
+        </div>
+
+        <div class="botao-pdv">
+            - ou E - Pr. Unitário
+        </div>
+
+        <div class="botao-pdv">
+            V - Total Produto
+        </div>
+
+        <div class="botao-pdv">
+            H - Observação
+        </div>
+
+        <div class="botao-pdv">
+            D - Alterar Tipo Desconto
+        </div>
+
+        <div class="botao-pdv">
+            M - Desconto
+        </div>
+
+        <div class="botao-pdv">
+            K - Cancelar Venda
+        </div>
+
+        <div class="botao-pdv">
+            T - Totalizar Venda
+        </div>
+
+        <div class="botao-pdv">
+            F7 - Pessoa
+        </div>
+
+        <div class="botao-pdv">
+            L - Informar Cliente
+        </div>
+
+        <div class="botao-pdv">
+            R - Reimprime
+        </div>
+
+        <div class="botao-pdv">
+            Gerenciador NFC-e
+        </div>
+    </div>
+</div>

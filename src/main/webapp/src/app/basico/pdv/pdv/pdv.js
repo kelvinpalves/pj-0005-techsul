@@ -13,7 +13,8 @@
         'multiPromise',
         '$rootScope',
         '$scope',
-        '$location'];
+        '$location',
+        '$window'];
 
     function CtrlForm(
         dataservice, 
@@ -22,7 +23,8 @@
         multiPromise,
         $rootScope,
         $scope, 
-        $location) {
+        $location,
+        $window) {
 
         /* jshint validthis: true */
         var vm   = this;
@@ -49,6 +51,11 @@
         vm.valorTotalNota               = 0;
         vm.voltar                       = voltar;
 
+        var larguraTela = $window.screen.width - 50;
+        var alturaTela = $window.screen.height;
+        
+        vm.larguraBotaoPdv = larguraTela / 7;
+        
         $doc.on("keyup", atalho);
 
         $scope.$on("$destroy", function () {
@@ -64,6 +71,22 @@
             valorTotalProduto: 0
         };
 
+        var BTN_ASTERISCO = 56; // Com shift Ativo
+        var BTN_D         = 68;
+        var BTN_E         = 69;
+        var BTN_F4        = 115;
+        var BTN_F7        = 118;
+        var BTN_F9        = 120;
+        var BTN_H         = 72;
+        var BTN_K         = 75;
+        var BTN_L         = 76;
+        var BTN_M         = 77;
+        var BTN_MENOS     = 189;
+        var BTN_Q         = 81;
+        var BTN_R         = 82;
+        var BTN_T         = 84;
+        var BTN_V         = 86;
+        
         function atalho(e) {
             if (ATALHO_SAIR === e.keyCode) {
                 voltar();
@@ -71,7 +94,159 @@
                 if (vm.model.precoEspecial) {
                     mudarPrecoEspecial();
                 }
+            } else if (BTN_F4 === e.keyCode) {
+                console.log('Consultar Produto.');
+            } else if (BTN_F9 === e.keyCode) {
+                console.log('Cadastrar Produto');
+            } else if (BTN_Q === e.keyCode || (BTN_ASTERISCO === e.keyCode && e.shiftKey)) {
+                quantidade(e);
+            } else if (BTN_E === e.keyCode || BTN_MENOS === e.keyCode) {
+                preco(e);
+            } else if (BTN_V === e.keyCode) {
+                total();
+            } else if (BTN_H === e.keyCode) {
+                console.log('Observação');
+            } else if (BTN_D === e.keyCode) {
+                tipoDesconto();
+            } else if (BTN_M === e.keyCode) {
+                desconto();
+            } else if (BTN_K === e.keyCode) {
+                console.log('Cancelar Venda');
+            } else if (BTN_T === e.keyCode) {
+                console.log('Totalizar Venda');
+            } else if (BTN_F7 === e.keyCode) {
+                console.log('Pessoa');
+            } else if (BTN_L === e.keyCode) {
+                console.log('Informar Cliente');
+            } else if (BTN_R === e.keyCode) {
+                console.log('Reimprime')
             }
+        }
+
+        var QUANTIDADE     = 1;
+        var DESCONTO       = 2;
+        var PRECO_UNITARIO = 3;
+        var VALOR_TOTAL    = 4;
+
+        function recalcularValor(tipo) {
+            switch (tipo) {
+                case QUANTIDADE: {
+                    console.log('quantidade');
+                } break;
+                case DESCONTO: {
+                    console.log('desconto');
+                } break;
+                case PRECO_UNITARIO: {
+                    console.log('preço');
+                } break;
+                case VALOR_TOTAL: {
+                    console.log('valor');
+                } break;
+            }
+        }
+
+        function tipoDesconto() {
+            vm.tipoDesconto = !vm.tipoDesconto;
+
+            if (vm.model.codigo) {
+                vm.model.codigo = vm.model.codigo.replace("d", "");
+                vm.model.codigo = vm.model.codigo.replace("D", "");
+            }
+            
+            $scope.$apply();
+        }
+
+        function desconto(codigo) {
+            if (vm.model.codigo) {
+                vm.model.codigo = vm.model.codigo.replace("m", "");
+                vm.model.codigo = vm.model.codigo.replace("M", "");
+            }
+            
+            setarDesconto(vm.model.codigo);
+        }
+
+        function setarDesconto(codigo) {
+            if (codigo) {
+                vm.model.desconto = parseInt(codigo);
+            }
+
+            delete vm.model.codigo;
+            $scope.$apply();    
+            recalcularValor(DESCONTO);
+        }
+
+        function quantidade(e) {
+            if (BTN_Q === e.keyCode) {
+                if (vm.model.codigo) {
+                    vm.model.codigo = vm.model.codigo.replace("q", "");
+                    vm.model.codigo = vm.model.codigo.replace("Q", "");
+                }
+            } else {
+                if (vm.model.codigo) {
+                    vm.model.codigo = vm.model.codigo.replace("*", ""); 
+                }
+            }
+
+            setarQuantidade(vm.model.codigo);
+        }
+
+        function setarQuantidade(codigo) {
+            if (codigo) {
+                if (codigo.indexOf(".") == -1 && codigo.indexOf(",") == -1) {
+                    vm.model.quantidade = parseInt(codigo);
+                } else {
+                    vm.model.quantidade = (codigo.indexOf(",") == -1) ? parseFloat(codigo) : parseFloat(codigo.replace(",", "."));
+                }
+            }    
+
+            delete vm.model.codigo;
+            $scope.$apply();    
+            recalcularValor(QUANTIDADE);
+
+        }
+
+        function preco(e) {
+            if (BTN_E === e.keyCode) {
+                if (vm.model.codigo) {
+                    vm.model.codigo = vm.model.codigo.replace("e", "");
+                    vm.model.codigo = vm.model.codigo.replace("E", "");
+                }
+            } else {
+                if (vm.model.codigo) {
+                    vm.model.codigo = vm.model.codigo.replace("-", ""); 
+                }
+            }
+
+            setarPreco(vm.model.codigo);
+        }
+
+        function setarPreco(codigo) {
+            if (codigo) {
+                vm.model.preco = (codigo.indexOf(",") == -1) ? parseFloat(codigo) : parseFloat(codigo.replace(",", "."));
+            }    
+
+            delete vm.model.codigo;
+            $scope.$apply();    
+            recalcularValor(PRECO_UNITARIO);
+        }
+
+        function total() {
+            if (vm.model.codigo) {
+                vm.model.codigo = vm.model.codigo.replace("v", "");
+                vm.model.codigo = vm.model.codigo.replace("V", "");
+            }
+            
+            setarTotal(vm.model.codigo);
+        }
+
+        function setarTotal(codigo) {
+            if (codigo) {
+                vm.model.valorTotalProduto = (codigo.indexOf(",") == -1) ? parseFloat(codigo) : parseFloat(codigo.replace(",", "."));
+            }    
+
+            delete vm.model.codigo;
+            $scope.$apply();    
+            recalcularValor(VALOR_TOTAL);
         }
 
         function buscarPorCodigo(codigo, evt) {
