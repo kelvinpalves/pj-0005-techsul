@@ -30,6 +30,7 @@ public class EstoqueMovimentacaoTipoServico {
             
             for (EstoqueMovimentacaoTipo model : dados) {
                 HashMap<String, Object> map = new HashMap<>();
+                
                 map.put("custo", model.getFgAlterarPrecoCusto());
                 map.put("venda", model.getFgAlterarPrecoVenda());
                 map.put("soma", model.getFgSoma());

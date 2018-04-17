@@ -36,6 +36,7 @@ public class ApplicationConfig extends Application {
         resources.add(br.com.techsulsistemas.servico.estoque.estoque.EstoqueController.class);
         resources.add(br.com.techsulsistemas.servico.estoque.estoquemovimentacao.EstoqueMovimentacaoController.class);
         resources.add(br.com.techsulsistemas.servico.estoque.estoquemovimentacaotipo.EstoqueMovimentacaoTipoController.class);
+        resources.add(br.com.techsulsistemas.servico.pdv.pdv.PdvController.class);
         resources.add(br.com.techsulsistemas.servico.produto.produto.ProdutoController.class);
         resources.add(br.com.techsulsistemas.servico.produto.produtocest.ProdutoCestController.class);
         resources.add(br.com.techsulsistemas.servico.produto.produtocsosn.ProdutoCsosnController.class);
