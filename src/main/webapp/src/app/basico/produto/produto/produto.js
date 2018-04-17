@@ -85,15 +85,15 @@
 				} else {
 					vm.modoEdicao = false;
 				}
+			}
 
-				function error(response) {
-					console.log(response);
-				}
+			function error(response) {
+				console.log(response);
+			}
 
-				function success(response) {
-					vm.model = response.data.data.ProdutoDto;
-					carregarObjetosAuxiliares(vm.model);
-				}
+			function success(response) {
+				vm.model = response.data.data.ProdutoDto;
+				carregarObjetosAuxiliares(vm.model);
 			}
 		}
 

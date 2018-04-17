@@ -23,9 +23,10 @@
 }
 
 .logo {
-    height: 200px;
     text-align: center;
-    padding-top: 20px;
+    font-size: 5em;
+    color: #36648a;
+    text-shadow: -2px 0 white, 0 2px white, 2px 0 white, 0 -2px white;
 }
 
 .label-pdv {
@@ -51,9 +52,11 @@ table thead tr th {
 }
 </style>
 
+<form name="formulario" novalidate autocomplete="off">
+
 <div class="row">
     <div class="col-md-12">
-        <input type="text" class="input-pdv" value="CHIMIA DE TOMATE DE GALINHA 180 GR">
+        <input type="text" class="input-pdv" ng-model="vm.model.descricao" ng-disabled="true">
     </div>
 </div>
 
@@ -61,14 +64,14 @@ table thead tr th {
     <div class="col-md-6">
         <div class="row">
             <div class="col-md-12 logo" >
-                <img src="http://www.kopp.com.br/wp-content/uploads/2014/03/Logo_Kopp.png" height="150">
+                TechSul Sistemas
             </div>
         </div>
         <div class="row">
             <div class="col-md-12">
                 <div class="form-group">
                     <label class="label-pdv">Produto</label>
-                    <input type="text" class="input-pdv" value="7898187">
+                    <input type="text" class="input-pdv" ng-model="vm.model.codigo" ng-keyup="vm.buscarPorCodigo(vm.model.codigo, $event)" id="codigo">
                 </div>
             </div>
         </div>
@@ -76,27 +79,27 @@ table thead tr th {
             <div class="col-md-6">
                 <div class="form-group">
                     <label class="label-pdv">Quantidade</label>
-                    <input type="text" class="input-pdv" value="3">
+                    <input id="quantidade" type="text" ui-number-mask="3" class="input-pdv" ng-model="vm.model.quantidade" ng-change="vm.evtChangePrecoOuQuantidade(vm.model)" ng-keyup="vm.evtKeyUpAdicionarNaLista(vm.model, $event)" ng-disabled="true">
                 </div>
             </div>
             <div class="col-md-6">
                 <div class="form-group">
                     <label class="label-pdv">Preço Unitário</label>
-                    <input type="text" class="input-pdv" value="R$ 2,00">
+                    <input type="text" class="input-pdv" ng-model="vm.model.preco" ui-money-mask="2" ng-change="vm.evtChangePrecoOuQuantidade(vm.model)">
                 </div>
             </div>
         </div>
         <div class="row">
-            <div class="col-md-6">
+            <div class="col-md-6" >
                 <div class="form-group">
-                    <label class="label-pdv">% Desconto</label>
-                    <input type="text" class="input-pdv">
+                    <label class="label-pdv">{{ vm.tipoDesconto ? '%' : 'R$' }} Desconto</label>
+                    <input id="desconto" type="text" class="input-pdv" ng-model="vm.model.desconto" ui-number-mask="2" ng-keyup="vm.evtKeyUpMudarTipoDesconto($event)">
                 </div>
             </div>
             <div class="col-md-6">
                 <div class="form-group">
                     <label class="label-pdv">Total Produto</label>
-                    <input type="text" class="input-pdv" value="R$ 6,00">
+                    <input type="text" class="input-pdv" ng-model="vm.model.valorTotalProduto" ui-money-mask="2" ng-disabled="true">
                 </div>
             </div>
         </div>
@@ -114,26 +117,12 @@ table thead tr th {
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td>1</td>
-                        <td >MASSA INTEGRAL ISABELA 300 G</td>
-                        <td class="text-center">2</td>
-                        <td class="text-center">R$ 2,90</td>
-                        <td class="text-center">R$ 5,80</td>
-                    </tr>
-                    <tr>
-                        <td >2</td>
-                        <td >REFRIGERANTE DOLLY 2L GUARANIUX</td>
-                        <td class="text-center">5</td>
-                        <td class="text-center">R$ 4,25</td>
-                        <td class="text-center">R$ 21,25</td>
-                    </tr>
-                    <tr>
-                        <td >3</td>
-                        <td >CHIMIA DE TOMATE DE GALINHA 180 GR</td>
-                        <td class="text-center">2</td>
-                        <td class="text-center">R$ 9,90</td>
-                        <td class="text-center">R$ 19,80</td>
+                    <tr ng-repeat="(key, item) in vm.itens">
+                        <td ng-bind="(key + 1)"></td>
+                        <td ng-bind="item.descricao"></td>
+                        <td ng-bind="item.quantidade | number" class="text-center"></td>
+                        <td ng-bind="item.preco | currency" class="text-center"></td>
+                        <td ng-bind="item.totalItem | currency" class="text-center"></td>
                     </tr>
                 </tbody>
             </table>
@@ -144,9 +133,11 @@ table thead tr th {
             </div>
             <div class="col-md-4">
                 <div class="form-group">
-                    <input type="text" class="input-pdv text-center" style="margin-left: -8px;" value="R$ 46,85">
+                    <input type="text" class="input-pdv text-center" style="margin-left: -8px;" ng-model="vm.valorTotalNota" ui-money-mask="2">
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+</form>
